@@ -58,8 +58,6 @@ class Calculator:
         for i in range(4):  # 4 columns
             self.master.grid_columnconfigure(i, weight=1)
 
-
-
     def button_clicked(self, text):
         if text == "=":
             try:

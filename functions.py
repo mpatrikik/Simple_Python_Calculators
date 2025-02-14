@@ -14,3 +14,4 @@ def division(num1, num2):
         print("Cannot divide by zero")
     else:
         print("The result is: ", format(num1 / num2, '.3f'))
+

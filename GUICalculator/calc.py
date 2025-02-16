@@ -124,7 +124,7 @@ class Calculator:
 
     def display_result(self, result):
         if isinstance(result, float) and not result.is_integer():
-            self.display_var.set(f"{result:.5f}")
+            self.display_var.set(f"{result:.6g}")
         else:
             self.display_var.set(str(int(result) if result.is_integer() else result))
         self.expression = str(result)

@@ -30,7 +30,6 @@ class Calculator:
         self.create_widgets()
 
     def create_widgets(self):
-        # Display
         self.display_label = ttk.Label(self.master, textvariable=self.display_var, style="Display.TLabel")
         self.display_label.grid(row=0, column=0, columnspan=4, sticky="nsew", pady=(0, 10))
 
@@ -67,11 +66,10 @@ class Calculator:
 
     def calculate(self):
         try:
-            # Evaluate the expression and update the display
-            result = str(eval(self.expression))
-            self.display_var.set(result)
-            self.expression = result # Keep result for further calculations
-        except (SyntaxError, ZeroDivisionError, NameError) as e:  # Catch specific errors
+            result = eval(self.expression)
+            self.display_var.set(f"{result:.5f}")
+            self.expression = str(result)
+        except (SyntaxError, ZeroDivisionError, NameError) as e:
             messagebox.showerror("Error", "Invalid Expression")
             self.clear()
         except Exception as e: # Catch all other errors
@@ -85,11 +83,11 @@ class Calculator:
 
     def square_root(self):
         try:
-            if self.expression: #Added condition
-                result = str(eval(self.expression + "**0.5"))
-                self.display_var.set(result)
-                self.expression = result  # Chain operations
-            else: #Added else
+            if self.expression:
+                result = eval(self.expression + "**0.5")
+                self.display_var.set(f"{result:.5f}")
+                self.expression = str(result)
+            else:
                 self.display_var.set("0") #Set 0
 
         except Exception as e:
@@ -98,11 +96,11 @@ class Calculator:
 
     def square(self):
         try:
-            if self.expression: #Added condition
-                result = str(eval(self.expression + "**2"))
-                self.display_var.set(result)
-                self.expression = result  # Chain operations
-            else: #Added else
+            if self.expression:
+                result = eval(self.expression + "**2")
+                self.display_var.set(f"{result:.5f}")
+                self.expression = str(result)
+            else:
                 self.display_var.set("0")
         except Exception as e:
             messagebox.showerror("Error", "Invalid Expression")

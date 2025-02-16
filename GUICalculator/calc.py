@@ -19,7 +19,7 @@ class Calculator:
         master.resizable(False, False)
 
         self.style = ttk.Style()
-        self.style.theme_use("clam")  # or "alt", "default", "classic" - experiment!
+        self.style.theme_use("clam")
         self.style.configure("TButton", font=("Arial", 16), padding=6)
         self.style.configure("TLabel", font=("Arial", 20), padding=4, background="#f0f0f5") # Light gray background
         self.style.configure("Display.TLabel", font=("Arial", 30), padding=8, anchor="e", background="#ffffff") # White background for display
@@ -28,6 +28,7 @@ class Calculator:
         self.expression = ""
 
         self.create_widgets()
+        self.bind_keys()
 
     def create_widgets(self):
         self.display_label = ttk.Label(self.master, textvariable=self.display_var, style="Display.TLabel")
@@ -52,6 +53,18 @@ class Calculator:
         for i in range(4):  # 4 columns
             self.master.grid_columnconfigure(i, weight=1)
 
+    def bind_keys(self):
+        for char in "0123456789./*-+":
+            self.master.bind(char, lambda event, c=char: self.append_to_expression(c))
+
+        self.master.bind("<Return>", lambda event: self.calculate())
+        self.master.bind("<BackSpace>", lambda event: self.backspace())
+        self.master.bind("<Escape>", lambda event: self.clear())
+        self.master.bind("<Delete>", lambda event: self.clear())
+        self.master.bind("^", lambda event: self.square())
+
+
+
     def button_clicked(self, text):
         if text == "=":
             self.calculate()
@@ -67,15 +80,13 @@ class Calculator:
     def calculate(self):
         try:
             result = eval(self.expression)
-            self.display_var.set(f"{result:.5f}")
-            self.expression = str(result)
+            self.display_result(result)
         except (SyntaxError, ZeroDivisionError, NameError) as e:
             messagebox.showerror("Error", "Invalid Expression")
             self.clear()
-        except Exception as e: # Catch all other errors
+        except Exception as e:
             messagebox.showerror("Error", f"An unexpected error occurred: {e}")
             self.clear()
-
 
     def clear(self):
         self.expression = ""
@@ -85,11 +96,9 @@ class Calculator:
         try:
             if self.expression:
                 result = eval(self.expression + "**0.5")
-                self.display_var.set(f"{result:.5f}")
-                self.expression = str(result)
+                self.display_result(result)
             else:
-                self.display_var.set("0") #Set 0
-
+                self.display_var.set("0")
         except Exception as e:
             messagebox.showerror("Error", "Invalid Expression")
             self.clear()
@@ -98,8 +107,7 @@ class Calculator:
         try:
             if self.expression:
                 result = eval(self.expression + "**2")
-                self.display_var.set(f"{result:.5f}")
-                self.expression = str(result)
+                self.display_result(result)
             else:
                 self.display_var.set("0")
         except Exception as e:
@@ -110,6 +118,16 @@ class Calculator:
         self.expression += text
         self.display_var.set(self.expression)
 
+    def backspace(self):
+        self.expression = self.expression[:-1]
+        self.display_var.set(self.expression if self.expression else "0")
+
+    def display_result(self, result):
+        if isinstance(result, float) and not result.is_integer():
+            self.display_var.set(f"{result:.5f}")
+        else:
+            self.display_var.set(str(int(result) if result.is_integer() else result))
+        self.expression = str(result)
 
 
 root = tk.Tk()
